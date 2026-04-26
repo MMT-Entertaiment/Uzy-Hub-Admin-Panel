@@ -189,6 +189,23 @@
         }
 
         .empty { padding: 32px 16px; text-align: center; color: var(--muted); font-size: 13px; line-height: 1.6; }
+
+        /* PROFIL PAGE */
+        .profil-header { display: flex; align-items: center; gap: 16px; padding: 20px 16px 0; }
+        .profil-avatar-big {
+            width: 72px; height: 72px; border-radius: 50%;
+            background: var(--accent); display: flex; align-items: center; justify-content: center;
+            font-size: 26px; font-weight: 700; overflow: hidden; flex-shrink: 0;
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .profil-avatar-big img { width: 100%; height: 100%; object-fit: cover; }
+        .profil-display-name { font-size: 20px; font-weight: 700; }
+        .profil-username { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 3px; }
+        .profil-fields { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+        .profil-field-label { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--muted); letter-spacing: .1em; margin-bottom: 4px; }
+        .profil-field-value { font-size: 13px; font-weight: 600; }
+        .profil-field-value.mono { font-family: 'DM Mono', monospace; font-size: 12px; }
+        .profil-roles { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -218,6 +235,7 @@
         <button class="tab active" onclick="showPage('overview', this)"><span class="ti">📊</span>Vue</button>
         <button class="tab" onclick="showPage('members', this)"><span class="ti">👥</span>Membres</button>
         <button class="tab" onclick="showPage('bots', this)"><span class="ti">🤖</span>Bots</button>
+        <button class="tab" onclick="showPage('profil', this)"><span class="ti">👤</span>Profil</button>
         <button class="tab" onclick="showPage('logs', this)"><span class="ti">📋</span>Logs</button>
     </nav>
 
@@ -285,6 +303,35 @@
         </div>
 
         <!-- Logs -->
+        <!-- Profil -->
+        <div id="page-profil" class="page">
+            <div class="section-title">Mon Profil</div>
+            <div class="section-sub">Vos informations sur Uzy Hub</div>
+            <div class="card">
+                <div class="profil-header">
+                    <div class="profil-avatar-big" id="profil-avatar-big">?</div>
+                    <div class="profil-main-info">
+                        <div class="profil-display-name" id="profil-display-name">...</div>
+                        <div class="profil-username" id="profil-username">...</div>
+                    </div>
+                </div>
+                <div class="profil-fields">
+                    <div class="profil-field">
+                        <div class="profil-field-label">ID DISCORD</div>
+                        <div class="profil-field-value mono" id="profil-id">...</div>
+                    </div>
+                    <div class="profil-field">
+                        <div class="profil-field-label">DATE D'ARRIVÉE</div>
+                        <div class="profil-field-value mono" id="profil-join">...</div>
+                    </div>
+                    <div class="profil-field">
+                        <div class="profil-field-label">RÔLES</div>
+                        <div class="profil-roles" id="profil-roles"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="page-logs" class="page">
             <div class="section-title">Logs</div>
             <div class="section-sub">Historique des actions admin</div>
@@ -432,11 +479,57 @@
         }).join('');
     }
 
+    function loadProfil() {
+        const user = JSON.parse(localStorage.getItem("discord_user") || "{}");
+        const token = localStorage.getItem("discord_token");
+        if (!user.id) return;
+
+        const name = user.global_name || user.username;
+        document.getElementById("profil-display-name").textContent = name;
+        document.getElementById("profil-username").textContent = "@" + user.username;
+        document.getElementById("profil-id").textContent = user.id;
+
+        if (user.avatar) {
+            const url = "https://cdn.discordapp.com/avatars/" + user.id + "/" + user.avatar + ".png?size=128";
+            document.getElementById("profil-avatar-big").innerHTML = "<img src=\"" + url + "\" alt=\"\">";
+        } else {
+            document.getElementById("profil-avatar-big").textContent = name.charAt(0).toUpperCase();
+        }
+
+        // Charger les infos membres (date de join + rôles) depuis le Worker
+        fetch(WORKER_URL + "/members", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({})
+        }).then(r => r.json()).then(data => {
+            if (!data.members) return;
+            const me = data.members.find(m => m.user.id === user.id);
+            if (!me) return;
+
+            // Date de join
+            const joinDate = new Date(me.joined_at);
+            document.getElementById("profil-join").textContent = joinDate.toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
+
+            // Rôles
+            const rolesEl = document.getElementById("profil-roles");
+            const memberRoleIds = me.roles || [];
+            const knownRoles = ROLES.filter(r => memberRoleIds.includes(r.id));
+            if (knownRoles.length) {
+                rolesEl.innerHTML = knownRoles.map(r => "<span class=\"m-type " + r.css + "\">" + r.label + "</span>").join("");
+            } else {
+                rolesEl.innerHTML = "<span class=\"m-type role-aucun\">Aucun rôle</span>";
+            }
+        }).catch(() => {
+            document.getElementById("profil-join").textContent = "Indisponible";
+        });
+    }
+
     function showPage(page, btn) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.getElementById(`page-${page}`).classList.add('active');
         btn.classList.add('active');
+        if (page === "profil") loadProfil();
     }
 
     function logout() {
