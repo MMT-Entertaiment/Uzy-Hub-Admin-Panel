@@ -107,6 +107,7 @@
         .bot-tag { font-size: 9px; font-family: 'DM Mono', monospace; background: var(--accent-glow); color: var(--accent); padding: 2px 6px; border-radius: 4px; flex-shrink: 0; }
 
         /* MEMBER PROFILE PAGE */
+        
         .back-btn { display: flex; align-items: center; gap: 8px; background: none; border: none; color: var(--muted); font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; padding: 0; margin-bottom: 16px; }
         .back-btn:active { color: var(--text); }
 
@@ -172,24 +173,13 @@
 
         .refresh-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 6px 12px; font-size: 11px; font-family: 'DM Mono', monospace; cursor: pointer; }
         .empty { padding: 32px 16px; text-align: center; color: var(--muted); font-size: 13px; line-height: 1.6; }
-
-        /* LOGS */
+        .logs-sticky-header { position: sticky; top: 102px; z-index: 50; background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
         .log-item { display: flex; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
         .log-item:last-child { border-bottom: none; }
         .log-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; overflow: hidden; flex-shrink: 0; }
         .log-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .log-body { flex: 1; min-width: 0; }
-        .logs-sticky-header { 
-    position: sticky; 
-    top: 56px; 
-    z-index: 90; 
-    background: var(--surface); 
-    border-bottom: 1px solid var(--border); 
-    padding: 12px 16px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: space-between; 
-        }
+        .log-header { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
         .log-author { font-size: 12px; font-weight: 700; color: var(--accent); }
         .log-date { font-size: 10px; color: var(--muted); font-family: "DM Mono", monospace; }
         .log-content { font-size: 12px; color: var(--text); line-height: 1.5; word-break: break-word; }
@@ -307,11 +297,18 @@
             <div class="section-sub">Messages du salon de logs</div>
             <div class="card">
                 <div class="card-header">
+                <div class="logs-sticky-header">
                     <div class="card-title">SALON LOGS</div>
                     <button class="refresh-btn" onclick="loadLogs()">↻ Actualiser</button>
                 </div>
+
+
+
                 <div id="logs-list"><div class="empty">Chargement...</div></div>
             </div>
+
+
+
         </div>
 
         <!-- Profil membre (page dynamique) -->
@@ -341,8 +338,8 @@
             </div>
         </div>
 
-    </div><!-- end .content -->
-</div><!-- end #app -->
+    </div>
+</div>
 
 <!-- MODAL MUTE -->
 <div class="modal-overlay hidden" id="modal-mute">
@@ -526,6 +523,7 @@
         const m = allMembers.find(m => m.user.id === userId);
         if (!m) return;
         currentMember = m;
+        prevPage = document.querySelector('.tab.active') ? 'members' : 'members';
 
         const user = m.user;
         const name = m.nick || user.global_name || user.username;
@@ -635,35 +633,14 @@
             if (data.success) { goBack(); await loadMembers(); }
         } catch { showToast('Erreur réseau', 'err'); }
     }
-    
+
     async function loadLogs() {
-        const container = document.getElementById('logs-list');
-        container.innerHTML = '<div class="empty">Chargement...</div>';
+        document.getElementById("logs-list").innerHTML = "<div class=\"empty\">Chargement...</div>";
         try {
-            const data = await workerPost('/logs');
-            if (!data.logs || data.logs.length === 0) {
-                container.innerHTML = '<div class="empty">Aucun log récent.</div>';
+            const data = await workerPost("/logs");
+            if (!data.messages || !data.messages.length) {
+                document.getElementById("logs-list").innerHTML = "<div class=\"empty\">Aucun message trouvé.</div>";
                 return;
-            }
-            // On inverse ici pour avoir le plus récent en haut
-            const logsInverses = data.logs.reverse();
-            
-            container.innerHTML = logsInverses.map(log => `
-                <div class="log-item">
-                    <div class="log-avatar">${log.author.charAt(0)}</div>
-                    <div class="log-body">
-                        <div class="log-header">
-                            <span class="log-author">${log.author}</span>
-                            <span class="log-date">${log.timestamp}</span>
-                        </div>
-                        <div class="log-content">${log.content}</div>
-                    </div>
-                </div>
-            `).join('');
-        } catch {
-            container.innerHTML = '<div class="empty">Erreur de chargement.</div>';
-        }
-    }
             }
             const msgs = [...data.messages].reverse();
             document.getElementById("logs-list").innerHTML = msgs.map(m => {
@@ -697,7 +674,7 @@
                 </div>`;
             }).join("");
         } catch {
-            document.getElementById("logs-list").innerHTML = '<div class="empty">Impossible de charger les logs.</div>';
+            document.getElementById("logs-list").innerHTML = "<div class=\"empty\">Impossible de charger les logs.</div>";
         }
     }
 
@@ -707,7 +684,7 @@
         document.getElementById(`page-${page}`).classList.add('active');
         btn.classList.add('active');
         if (page === 'profil') loadProfil();
-        if (page === 'logs') loadLogs();
+        if (page === "logs") loadLogs();
     }
 
     function loadProfil() {
