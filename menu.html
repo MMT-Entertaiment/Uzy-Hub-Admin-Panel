@@ -1,1 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uzy Hub — Menu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #080a0e;
+            --surface: #0f1117;
+            --surface2: #161820;
+            --border: #1f2230;
+            --accent: #5865F2;
+            --accent-glow: #5865F240;
+            --text: #e8eaf2;
+            --muted: #555870;
+            --danger: #f04747;
+            --success: #23d160;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
 
+        /* TOPBAR */
+        .topbar { position: sticky; top: 0; z-index: 100; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 16px; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+        .topbar-left { display: flex; align-items: center; gap: 10px; }
+        .topbar-logo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: .06em; line-height: 1; }
+        .topbar-logo span { color: var(--accent); }
+        .topbar-badge { font-size: 9px; font-family: 'DM Mono', monospace; letter-spacing: .12em; color: var(--accent); background: var(--accent-glow); padding: 3px 7px; border-radius: 4px; }
+
+        /* CONTENT */
+        .content { padding: 28px 16px 48px; max-width: 600px; margin: 0 auto; }
+
+        .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: .04em; margin-bottom: 4px; }
+        .section-sub { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 28px; }
+
+        /* MENU CARDS */
+        .menu-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px 16px;
+            margin-bottom: 12px;
+            text-decoration: none;
+            color: var(--text);
+            transition: border-color .15s, background .15s;
+            cursor: pointer;
+        }
+        .menu-card:active { background: var(--surface2); border-color: var(--accent); }
+
+        .menu-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+        .menu-icon.blue { background: var(--accent-glow); }
+        .menu-icon.green { background: #23d16020; }
+        .menu-icon.purple { background: #9b59b620; }
+
+        .menu-info { flex: 1; min-width: 0; }
+        .menu-label { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+        .menu-desc { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+        .menu-chevron { font-size: 20px; color: var(--muted); flex-shrink: 0; }
+
+        /* DIVIDER */
+        .divider { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--muted); letter-spacing: .1em; margin: 20px 0 12px; }
+    </style>
+</head>
+<body>
+
+    <header class="topbar">
+        <div class="topbar-left">
+            <div class="topbar-logo">UZY<span>HUB</span></div>
+            <div class="topbar-badge">MENU</div>
+        </div>
+    </header>
+
+    <div class="content">
+        <div class="section-title">Menu</div>
+        <div class="section-sub">Accédez rapidement aux différentes sections du Uzy Hub.</div>
+
+        <div class="divider">ADMINISTRATION</div>
+
+        <a class="menu-card" href="https://MMT-Entertaiment.github.io/dashboard.html">
+            <div class="menu-icon blue">📊</div>
+            <div class="menu-info">
+                <div class="menu-label">Panel Admin</div>
+                <div class="menu-desc">Gestion des membres, logs, bots</div>
+            </div>
+            <span class="menu-chevron">›</span>
+        </a>
+
+        <div class="divider">RESSOURCES</div>
+
+        <a class="menu-card" href="https://MMT-Entertaiment.github.io/assistance.html">
+            <div class="menu-icon green">🛠️</div>
+            <div class="menu-info">
+                <div class="menu-label">Assistance</div>
+                <div class="menu-desc">Aide et support</div>
+            </div>
+            <span class="menu-chevron">›</span>
+        </a>
+
+
+    </div>
+
+</body>
+</html>
