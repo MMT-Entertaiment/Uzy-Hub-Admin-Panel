@@ -1,1 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uzy Hub — Connexion Membre</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #080a0e;
+            --surface: #0f1117;
+            --border: #1f2230;
+            --accent: #5865F2;
+            --accent-glow: #5865F240;
+            --text: #e8eaf2;
+            --muted: #555870;
+            --danger: #f04747;
+            --success: #23d160;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px 24px;
+            max-width: 340px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            text-align: center;
+        }
+        .spin { width: 36px; height: 36px; border: 2.5px solid #ffffff0f; border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .status { font-size: 13px; color: var(--muted); font-family: 'DM Mono', monospace; }
+        .logo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: .06em; }
+        .logo span { color: var(--accent); }
+        .err { color: var(--danger); font-size: 13px; }
+    </style>
+</head>
+<body>
+<div class="box">
+    <div class="logo">UZY<span>HUB</span></div>
+    <div class="spin" id="spin"></div>
+    <div class="status" id="status">Connexion en cours...</div>
+</div>
 
+<script>
+    const WORKER_URL = "https://oauth2-member.uzydoorman.workers.dev";
+    const MEMBER_ROLE_ID = "1462169371785953534";
+
+    async function handleCallback() {
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get("code");
+
+        if (!code) {
+            showError("Erreur 1: Vous n'êtes pas membre du serveur, si vous l'êtes veuillez nous contacter sur le serveur Discord.");
+            return;
+        }
+
+        try {
+            setStatus("Échange du code...");
+            const res = await fetch(`${WORKER_URL}/callback`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ code })
+            });
+            const data = await res.json();
+
+            if (!data.access_token) {
+                showError("Échec de la connexion.");
+                return;
+            }
+
+            setStatus("Vérification du rôle...");
+            const checkRes = await fetch(`${WORKER_URL}/check-member`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token: data.access_token })
+            });
+            const checkData = await checkRes.json();
+
+            if (!checkData.isMember) {
+                showError("Erreur 1: Vous n'êtes pas membre du serveur, si vous l'êtes veuillez nous contacter sur le serveur Discord.");
+                return;
+            }
+
+            localStorage.setItem('member_token', data.access_token);
+            localStorage.setItem('member_user', JSON.stringify(checkData.user));
+
+            setStatus("Redirection...");
+            window.location.href = 'member.html';
+
+        } catch (e) {
+            showError("Erreur réseau. Réessayez.");
+        }
+    }
+
+    function setStatus(msg) {
+        document.getElementById('status').textContent = msg;
+    }
+
+    function showError(msg) {
+        document.getElementById('spin').style.display = 'none';
+        const s = document.getElementById('status');
+        s.textContent = msg;
+        s.className = 'err';
+    }
+
+    handleCallback();
+</script>
+</body>
+</html>
