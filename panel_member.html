@@ -257,8 +257,8 @@
             document.getElementById('loading').style.display = 'none';
             document.getElementById('app').style.display = 'flex';
         } catch {
-            alert("Erreur de connexion.");
-            logout();
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('app').style.display = 'flex';
         }
     }
 
