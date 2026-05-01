@@ -16,64 +16,66 @@
             --accent-glow: #5865F240;
             --text: #e8eaf2;
             --muted: #555870;
-            --danger: #f04747;
             --success: #23d160;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
 
-        /* TOPBAR */
         .topbar { position: sticky; top: 0; z-index: 100; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 16px; height: 56px; display: flex; align-items: center; justify-content: space-between; }
         .topbar-left { display: flex; align-items: center; gap: 10px; }
         .topbar-logo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: .06em; line-height: 1; }
         .topbar-logo span { color: var(--accent); }
         .topbar-badge { font-size: 9px; font-family: 'DM Mono', monospace; letter-spacing: .12em; color: var(--accent); background: var(--accent-glow); padding: 3px 7px; border-radius: 4px; }
 
-        /* CONTENT */
-        .content { padding: 28px 16px 48px; max-width: 600px; margin: 0 auto; }
+        .content { padding: 20px 16px 48px; max-width: 600px; margin: 0 auto; }
+        .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: .04em; margin-bottom: 2px; }
+        .section-sub { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+        .divider { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--muted); letter-spacing: .1em; margin: 20px 0 10px; }
 
-        .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: .04em; margin-bottom: 4px; }
-        .section-sub { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 28px; }
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-        /* MENU CARDS */
+        /* CARTE : bande colorée à gauche, texte à droite, paysage */
         .menu-card {
-            display: flex;
-            align-items: center;
-            gap: 16px;
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 18px 16px;
-            margin-bottom: 12px;
+            border-radius: 12px;
+            overflow: hidden;
             text-decoration: none;
             color: var(--text);
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            min-height: 70px;
+            aspect-ratio: 4 / 3;
             transition: border-color .15s, background .15s;
             cursor: pointer;
         }
         .menu-card:active { background: var(--surface2); border-color: var(--accent); }
 
-        .menu-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
+        .menu-card-band {
+            width: 44%;
+            flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
-            flex-shrink: 0;
+            font-size: 36px;
         }
-        .menu-icon.blue { background: var(--accent-glow); }
-        .menu-icon.green { background: #23d16020; }
-        .menu-icon.purple { background: #9b59b620; }
+        .menu-card-band.blue   { background: var(--accent-glow); }
+        .menu-card-band.green  { background: #23d16020; }
+        .menu-card-band.purple { background: #9b59b620; }
+        .menu-card-band.orange { background: #faa61a20; }
 
-        .menu-info { flex: 1; min-width: 0; }
-        .menu-label { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
-        .menu-desc { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
-
-        .menu-chevron { font-size: 20px; color: var(--muted); flex-shrink: 0; }
-
-        /* DIVIDER */
-        .divider { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--muted); letter-spacing: .1em; margin: 20px 0 12px; }
+        .menu-card-text {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 10px 10px;
+            gap: 3px;
+            min-width: 0;
+        }
+        .menu-card-label { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: .04em; line-height: 1; }
+        .menu-card-desc { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--muted); letter-spacing: .03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     </style>
 </head>
 <body>
@@ -90,28 +92,40 @@
         <div class="section-sub">Accédez rapidement aux différentes sections du Uzy Hub.</div>
 
         <div class="divider">ADMINISTRATION</div>
-
-        <a class="menu-card" href="https://MMT-Entertaiment.github.io/dashboard.html">
-            <div class="menu-icon blue">📊</div>
-            <div class="menu-info">
-                <div class="menu-label">Panel Admin</div>
-                <div class="menu-desc">Gestion des membres, logs, bots</div>
-            </div>
-            <span class="menu-chevron">›</span>
-        </a>
+        <div class="menu-grid">
+            <a class="menu-card" href="https://MMT-Entertaiment.github.io/dashboard.html">
+                <div class="menu-card-band blue">📊</div>
+                <div class="menu-card-text">
+                    <div class="menu-card-label">Panel Admin</div>
+                    <div class="menu-card-desc">Gestion & modération</div>
+                </div>
+            </a>
+            <a class="menu-card" href="https://MMT-Entertaiment.github.io/panel_member.html">
+                <div class="menu-card-band purple">👤</div>
+                <div class="menu-card-text">
+                    <div class="menu-card-label">Panel Membre</div>
+                    <div class="menu-card-desc">Votre espace membre</div>
+                </div>
+            </a>
+        </div>
 
         <div class="divider">RESSOURCES</div>
-
-        <a class="menu-card" href="https://MMT-Entertaiment.github.io/assistance.html">
-            <div class="menu-icon green">🛠️</div>
-            <div class="menu-info">
-                <div class="menu-label">Assistance</div>
-                <div class="menu-desc">Aide et support</div>
-            </div>
-            <span class="menu-chevron">›</span>
-        </a>
-
-
+        <div class="menu-grid">
+            <a class="menu-card" href="https://MMT-Entertaiment.github.io/assistance.html">
+                <div class="menu-card-band green">🛠️</div>
+                <div class="menu-card-text">
+                    <div class="menu-card-label">Assistance</div>
+                    <div class="menu-card-desc">Aide et support</div>
+                </div>
+            </a>
+            <a class="menu-card" href="https://mmt-entertaiment.github.io/termsofservice">
+                <div class="menu-card-band orange">📄</div>
+                <div class="menu-card-text">
+                    <div class="menu-card-label">CGU</div>
+                    <div class="menu-card-desc">Conditions d'utilisation</div>
+                </div>
+            </a>
+        </div>
     </div>
 
 </body>
