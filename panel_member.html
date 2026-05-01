@@ -103,13 +103,9 @@
         .role-aucun       { background: #ffffff08; color: var(--muted); }
 
         .warn-block { padding: 12px 16px; display: flex; align-items: center; gap: 10px; }
-        .warn-clean { font-size: 13px; font-weight: 700; }
-        .warn-clean-label { color: var(--text); }
+        .warn-clean { font-size: 13px; font-weight: 600; color: var(--text); }
         .warn-clean-value { color: var(--success); }
-        .role-warn1 { background: #f0474720; color: var(--danger); }
-        .role-warn2 { background: #f0474720; color: var(--danger); }
-        .role-warn3 { background: #f0474720; color: var(--danger); }
-        .role-warn4 { background: #f0474720; color: var(--danger); }
+        .role-warn1, .role-warn2, .role-warn3, .role-warn4 { background: #f0474720; color: var(--danger); font-size: 11px; font-family: 'DM Mono', monospace; padding: 2px 7px; border-radius: 4px; display: inline-block; margin-top: 4px; }
 
         .vous-tag { font-size: 10px; color: var(--muted); font-style: italic; font-weight: 400; font-family: 'DM Sans', sans-serif; flex-shrink: 0; }
         .bot-tag { font-size: 9px; font-family: 'DM Mono', monospace; background: var(--accent-glow); color: var(--accent); padding: 2px 6px; border-radius: 4px; flex-shrink: 0; }
@@ -166,6 +162,7 @@
                 <div class="stat-card"><div class="stat-label">SERVEUR</div><div class="stat-val blue">UZY HUB</div></div>
                 <div class="stat-card"><div class="stat-label">STATUT</div><div class="stat-val green">ONLINE</div></div>
                 <div class="stat-card"><div class="stat-label">MEMBRES</div><div class="stat-val blue" id="stat-members">—</div></div>
+                <div class="stat-card"><div class="stat-label">AVERTISSEMENT</div><div id="warn-block"><span class="warn-clean">Vous êtes <span class="warn-clean-value">clean</span></span></div></div>
             </div>
             <div class="card">
                 <div class="card-header"><div class="card-title">MON COMPTE</div></div>
@@ -178,10 +175,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card">
-                <div class="card-header"><div class="card-title">NIVEAU D'AVERTISSEMENT</div></div>
-                <div class="warn-block" id="warn-block"><span class="warn-clean">Vous êtes <span class="warn-clean-value">clean</span></span></div>
-            </div>
+
         </div>
 
         <!-- Members -->
