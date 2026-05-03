@@ -57,12 +57,26 @@
         const WORKER_URL = "https://oauth2.uzydoorman.workers.dev";
 
         async function handleCallback() {
+            // Si déjà connecté, rediriger directement
+            if (localStorage.getItem('discord_token') && localStorage.getItem('discord_user')) {
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
             const params = new URLSearchParams(window.location.search);
             const code = params.get('code');
 
+            // Pas de code = lancer OAuth2
             if (!code) {
-                showError("Aucun code d'autorisation reçu. Redirection...");
-                setTimeout(() => window.location.href = 'index.html', 2000);
+                const CLIENT_ID = "1489310793806774333";
+                const REDIRECT_URI = "https://MMT-Entertaiment.github.io/callback.html";
+                const oauthParams = new URLSearchParams({
+                    client_id: CLIENT_ID,
+                    redirect_uri: REDIRECT_URI,
+                    response_type: "code",
+                    scope: "identify guilds.members.read",
+                });
+                window.location.href = `https://discord.com/oauth2/authorize?${oauthParams}`;
                 return;
             }
 
